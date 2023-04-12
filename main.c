@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include "graphics.h"
 
-#define WIDTH 10
-#define HEIGHT 10
+#define WIDTH 500
+#define HEIGHT 500
 
 vec3_t vertex_list[] = {
-    vec3(-1, -1, 5),
+    vec3(-1, -1, 3),
     vec3(0, 1, 5),
     vec3(1, -1, 5),
 };
@@ -19,6 +19,7 @@ mesh3_t mesh = mesh3(
     .vertex_list = vertex_list,
     .face_count = lengthof(face_list),
     .face_list = face_list,
+    .color = color24(255, 0, 0)
 );
 
 camera3_t camera = camera3(
@@ -26,7 +27,7 @@ camera3_t camera = camera3(
     .view_width = 2,
     .view_height = 2,
     .z_focus = 1,
-    .range = 2
+    .range = 10
 );
 
 space3_t space = space3_default();
@@ -42,18 +43,8 @@ int main(int argc, char const* argv[]) {
     };
     raycast(&frame, &camera, &space, lengthof(meshes), meshes);
 
-    // Dump the depthmap.
-    size_t index = 0;
-    for (size_t j = 0; j < frame.height; j++) {
-        for (size_t i = 0; i < frame.width; i++) {
-            if (i > 0) {
-                putchar(' ');
-            }
-            printf("%03d", frame.depthmap[index]);
-            index++;
-        }
-        putchar('\n');
-    }
+    // Generate ppm file
+    ppm_write_frame(stdout, &frame);
 
     // Free the frame buffer.
     frame_buffer_free(&frame);

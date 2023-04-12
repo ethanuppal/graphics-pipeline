@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include "model/triangle.h" // tri3_t
 #include "model/space.h" // matrix3_t
+#include "model/color.h" // color_t
 #include "util/macros.h" // GENERIC_CONSTRUCTOR
 
 #define MAX_VERTICES 256
@@ -23,6 +24,8 @@ typedef struct {
 
     size_t face_count;
     face3_t* face_list;
+
+    color_t color;
 } mesh3_t;
 
 #define face3(a, b, c) ((face3_t){ a, b, c })

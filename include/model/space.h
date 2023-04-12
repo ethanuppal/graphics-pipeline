@@ -29,3 +29,5 @@ typedef struct {
 }})
 
 scalar_t det3(const matrix3_t matrix);
+
+void matrix3_dump(const matrix3_t matrix);

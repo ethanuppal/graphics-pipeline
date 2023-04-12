@@ -15,7 +15,7 @@ typedef struct {
 /// Represents the result of a ray intersection.
 typedef struct {
     scalar_t t;
-    vec3_t loc;
+    vec2_t loc;
 } ray3_intersect;
 
 #define ray3(o, d) ((ray3_t){ o, d });

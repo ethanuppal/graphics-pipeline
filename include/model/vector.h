@@ -5,12 +5,21 @@
 
 typedef float scalar_t;
 
+/// Represents a vector in 2d Euclidean space.
+typedef struct {
+    scalar_t x;
+    scalar_t y;
+} vec2_t;
+
 /// Represents a vector in 3d Euclidean space.
 typedef struct {
     scalar_t x;
     scalar_t y;
     scalar_t z;
 } vec3_t;
+
+/// Creates a 3d vector with the given components.
+#define vec2(x, y) ((vec2_t){ x, y })
 
 /// Creates a 3d vector with the given components.
 #define vec3(x, y, z) ((vec3_t){ x, y, z })
@@ -58,7 +67,7 @@ typedef struct {
 } while (0)
 
 /// Computes the dot product between two vectors.
-#define vec3_dot(v1, v2) ((v1).x * (v2).x + (v1).y * (v2).y + (v1).x * (v2).y)
+#define vec3_dot(v1, v2) ((v1).x * (v2).x + (v1).y * (v2).y + (v1).z * (v2).z)
 
 /// Computes the magnitude of a vector.
 #define vec3_mag(v) (sqrt(vec3_dot(v, v)))
@@ -66,5 +75,13 @@ typedef struct {
 /// Normalizes the given vector.
 #define vec3_normm(v) vec3_divm(v, vec3_mag(v))
 
+/// Returns the sum of two vectors.
+vec3_t vec3_add(vec3_t v1, vec3_t v2);
+
+/// Returns the difference of two vectors.
+vec3_t vec3_sub(vec3_t v1, vec3_t v2);
+
 /// Returns a linear combination of three vectors.
 vec3_t vec3_comb(scalar_t a, vec3_t v1, scalar_t b, vec3_t v2, scalar_t c, vec3_t v3);
+
+void vec3_dump(vec3_t v);

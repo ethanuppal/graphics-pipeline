@@ -6,11 +6,12 @@ SRC      := $(wildcard src/*.c)
 OBJ      := ${SRC:.c=.o}
 BIN      := bin
 PRG      := main
-
+PRODUCT  := ${BIN}/out.ppm
 CFLAGS   += ${WARNINGS}
 
 test: ${PRG}
-	${BIN}/${PRG}
+	${BIN}/${PRG} > ${PRODUCT}
+	open ${PRODUCT}
 
 ${PRG}: ${OBJ} main.c
 	${CC} ${CFLAGS} $^ -o ${BIN}/${PRG}
