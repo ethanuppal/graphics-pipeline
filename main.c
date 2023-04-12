@@ -7,9 +7,9 @@
 #define HEIGHT 500
 
 vec3_t vertex_list1[] = {
-    vec3(-2, -1, 3),
-    vec3(0, 1, 5),
-    vec3(1, -1, 5),
+    vec3(-2, -1, 2.5),
+    vec3(-0.5, 1, 5.5),
+    vec3(1, -1, 4.5),
 };
 face3_t face_list1[] = {
     face3(0, 1, 2)
@@ -23,9 +23,9 @@ mesh3_t mesh1 = mesh3(
 );
 
 vec3_t vertex_list2[] = {
-    vec3(-1, 1, 3),
-    vec3(1.5, 2.5, 4),
-    vec3(2, 0.8, 3),
+    vec3(-1, 1, 2.5),
+    vec3(1.5, 2.5, 3.5),
+    vec3(2, 0.8, 2.5),
 };
 face3_t face_list2[] = {
     face3(0, 1, 2)
@@ -39,9 +39,9 @@ mesh3_t mesh2 = mesh3(
 );
 
 vec3_t vertex_list3[] = {
-    vec3(1, -1, 5),
-    vec3(-1, -1, 3),
-    vec3(1.5, 2.5, 4),
+    vec3(1, -1, 4.5),
+    vec3(-1, -1, 2.5),
+    vec3(1.5, 2.5, 3.5),
 };
 face3_t face_list3[] = {
     face3(0, 1, 2)
