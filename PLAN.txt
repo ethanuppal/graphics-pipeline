@@ -1,0 +1,30 @@
+PLAN
+====
+
+Question Source: https://www.khanacademy.org/computing/computer-programming/programming/good-practices/a/planning-a-programming-project
+
+What do you want to make?
+
+    I want to make a graphics pipeline that can render 3D meshes. It does not have to be efficient; it need only create a static 2D render.
+
+What technology will you use?
+
+    I will use C run on the CPU and the image format by NetPBM.
+
+What features will it include?
+
+    - Load in scene of meshes (models)
+    - Apply linear transformations to meshes and to scene
+        - Apply linear transformations to sets of objects around specified origin
+    - Render to frame buffer via raycasting
+    - Write frame buffer to generic image output
+
+But what features must it include?
+
+    - Write frame buffer to .ppm files
+
+How will you implement it?
+
+What's your timeline?
+
+Copyright (C) Ethan Uppal 2023. All rights reserve.
