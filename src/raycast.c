@@ -9,28 +9,14 @@
 #include "util/abort.h" // abort
 
 bool single_ray_single_triangle(ray3_intersect* intersect, const ray3_t* ray, const tri3_t* tri) {
-    //printf("single_ray_single_triangle\n");
-
     // Compute determinants for Cramer's rule
     const vec3_t d1 = vec3_sub(tri->a, tri->b);
     const vec3_t d2 = vec3_sub(tri->a, tri->c);
     const vec3_t d3 = ray->dir;
     const vec3_t n = vec3_sub(tri->a, ray->origin);
 
-    // if (ray->dir.x == 0 && ray->dir.y == 0 && ray->dir.z == 1) {
-    //     printf("fff\n");
-    // }
-
-    // printf("origin:"); vec3_dump(ray->origin);
-    // printf("dir:"); vec3_dump(ray->dir);
-    // printf("a:"); vec3_dump(tri->a);
-    // printf("b:"); vec3_dump(tri->b);
-    // printf("c:"); vec3_dump(tri->c);
-
     matrix3_t bottom_matrix = matrix3(d1, d2, d3);
     scalar_t bottom_determinant = det3(bottom_matrix);
-    // matrix3_dump(bottom_matrix);
-    // printf("bottom_determinant %f\n", bottom_determinant);
 
     if (bottom_determinant == 0) {
         return false;
@@ -46,8 +32,6 @@ bool single_ray_single_triangle(ray3_intersect* intersect, const ray3_t* ray, co
 
         // Triangle interior test
         if (alpha > 0 && beta > 0 && gamma > 0) {
-            // printf("a=%f b=%f g=%f\n", alpha, beta, gamma);
-
             // Convert barycentric to Cartesian
             // https://stackoverflow.com/questions/56328254/how-to-make-the-conversion-from-barycentric-coordinates-to-cartesian-coordinates
             vec3_t barycentric = vec3(alpha, beta, gamma);
