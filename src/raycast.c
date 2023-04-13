@@ -7,38 +7,41 @@
 #include "model/vector.h" // vec3_t et al.
 #include "model/ray.h" // ray3_t
 #include "util/abort.h" // abort
+#include "util/macros.h" // INLINE
 
-bool single_ray_single_triangle(ray3_intersect* intersect, const ray3_t* ray, const tri3_t* tri) {
+v3_t tri[3];
+
+INLINE bool single_ray_single_triangle(ray3_intersect* intersect, const ray3_t* ray) {
     // Compute determinants for Cramer's rule
-    const vec3_t d1 = vec3_sub(tri->a, tri->b);
-    const vec3_t d2 = vec3_sub(tri->a, tri->c);
-    const vec3_t d3 = ray->dir;
-    const vec3_t n = vec3_sub(tri->a, ray->origin);
+    const v3_t d1 = tri[0] - tri[1];
+    const v3_t d2 = tri[0] - tri[2];
+    const v3_t d3 = ray->dir;
+    const v3_t n = tri[0] - ray->origin;
 
-    matrix3_t bottom_matrix = matrix3(d1, d2, d3);
-    scalar_t bottom_determinant = det3(bottom_matrix);
+    const matrix3_t bottom_matrix = matrix3(d1, d2, d3);
+    const scalar_t bottom_determinant = det3(bottom_matrix);
 
     if (bottom_determinant == 0) {
         return false;
     } else {
-        scalar_t beta_determinant = det3(matrix3(n, d2, d3));
-        scalar_t gamma_determinant = det3(matrix3(d1, n, d3));
-        scalar_t t_determinant = det3(matrix3(d1, d2, n));
+        const scalar_t beta_determinant = det3(matrix3(n, d2, d3));
+        const scalar_t gamma_determinant = det3(matrix3(d1, n, d3));
+        const scalar_t t_determinant = det3(matrix3(d1, d2, n));
 
         // Use Cramer's rule to find barycentric coordinates
-        scalar_t beta = beta_determinant / bottom_determinant;
-        scalar_t gamma = gamma_determinant / bottom_determinant;
-        scalar_t alpha = 1 - beta - gamma;
+        const scalar_t beta = beta_determinant / bottom_determinant;
+        const scalar_t gamma = gamma_determinant / bottom_determinant;
+        const scalar_t alpha = 1 - beta - gamma;
 
         // Triangle interior test
         if (alpha > 0 && beta > 0 && gamma > 0) {
             // Convert barycentric to Cartesian
             // https://stackoverflow.com/questions/56328254/how-to-make-the-conversion-from-barycentric-coordinates-to-cartesian-coordinates
-            vec3_t barycentric = vec3(alpha, beta, gamma);
-            vec3_t tri_x = vec3(tri->a.x, tri->b.x, tri->c.x);
-            vec3_t tri_y = vec3(tri->a.y, tri->b.y, tri->c.y);
-            scalar_t x = vec3_dot(barycentric, tri_x);
-            scalar_t y = vec3_dot(barycentric, tri_y);
+            const v3_t barycentric = vec3(alpha, beta, gamma);
+            const v3_t tri_x = vec3(tri[0][0], tri[1][0], tri[2][0]);
+            const v3_t tri_y = vec3(tri[0][1], tri[1][1], tri[2][1]);
+            const scalar_t x = vec3_dot(barycentric, tri_x);
+            const scalar_t y = vec3_dot(barycentric, tri_y);
 
             // Use Cramer's rule to find t
             intersect->t = t_determinant / bottom_determinant;
@@ -51,7 +54,8 @@ bool single_ray_single_triangle(ray3_intersect* intersect, const ray3_t* ray, co
     }
 }
 
-void single_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t width, size_t height, const camera3_t* camera, size_t mesh_count, const mesh3_t meshes[]) {
+void single_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t width, size_t height, const camera3_t* camera, const mesh3_t meshes[], size_t mesh_count);
+INLINE void single_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t width, size_t height, const camera3_t* camera, const mesh3_t meshes[], size_t mesh_count) {
     // How far along the plane the x coordinate of the pixel is.
     scalar_t plane_x_prop = (scalar_t)pi / (scalar_t)width;
     // The x coordinate of the pixel on the plane.
@@ -63,10 +67,10 @@ void single_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t wid
 
     // The point at which the ray should intersect the plane, also the location
     // of the pixel on the plane, IF ADDED TO camera->pos.
-    vec3_t plane_intersect = vec3(plane_x, plane_y, camera->z_focus);
+    v3_t plane_intersect = vec3(plane_x, plane_y, camera->z_focus);
 
     // Normalize the quasi-intersection point to get ray direction.
-    vec3_t dir = plane_intersect;
+    v3_t dir = plane_intersect;
     vec3_normm(dir);
 
     // Create the ray.
@@ -84,9 +88,9 @@ void single_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t wid
     for (size_t i = 0; i < mesh_count; i++) {
         const mesh3_t mesh = meshes[i];
         for (size_t j = 0; j < mesh.face_count; j++) {
-            const tri3_t tri = mesh3_face_tri(&mesh, j);
+            mesh3_face_load_tri(tri, &mesh, j);
             ray3_intersect intersect;
-            if (single_ray_single_triangle(&intersect, &ray, &tri)) {
+            if (single_ray_single_triangle(&intersect, &ray)) {
                 if (intersect.t < best_intersect.t) {
                     best_intersect = intersect;
                     chosen = mesh.color;
@@ -116,8 +120,8 @@ void raycast(frame_buffer_t* frame, const camera3_t* camera, const space3_t* spa
                 frame->width,
                 frame->height,
                 camera,
-                mesh_count,
-                meshes
+                meshes,
+                mesh_count
             );
             index++;
         }

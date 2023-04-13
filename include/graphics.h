@@ -5,7 +5,7 @@
 #include "model/color.h"
 #include "model/mesh.h"
 #include "model/ray.h"
-#include "model/space.h"
+#include "model/matrix.h"
 #include "model/triangle.h"
 #include "model/vector.h"
 

@@ -5,7 +5,7 @@
 #include "util/macros.h" // GENERIC_CONSTRUCTOR
 
 typedef struct {
-    vec3_t pos;
+    v3_t pos;
 
     scalar_t view_width;
     scalar_t view_height;

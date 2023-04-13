@@ -29,3 +29,23 @@ struct __dump_arg {
     } \
     printf("}\n"); \
 } while (0)
+
+// https://stackoverflow.com/questions/8381293/how-do-i-force-gcc-to-inline-a-function
+#ifndef INLINE
+    #ifdef __GNUC__
+    #define INLINE __attribute__((always_inline))
+    #elif _MSC_VER
+    #define INLINE __forceinline
+    #else
+    #define INLINE inline // I tried :(
+    #endif
+#endif
+
+#define __eval(...) __VA_ARGS__
+#define __eval1(...) __eval(__eval(__VA_ARGS__))
+#define __eval2(...) __eval1(__eval1(__VA_ARGS__))
+#define __eval3(...) __eval2(__eval2(__VA_ARGS__))
+#define __eval4(...) __eval3(__eval3(__VA_ARGS__))
+#define __eval5(...) __eval4(__eval4(__VA_ARGS__))
+#define __eval6(...) __eval5(__eval5(__VA_ARGS__))
+#define eval(...) __eval6(__eval6(__VA_ARGS__))

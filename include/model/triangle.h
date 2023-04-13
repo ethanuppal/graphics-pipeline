@@ -5,7 +5,7 @@
 
 /// Represents a triangle in 3d Euclidean space.
 typedef struct {
-    vec3_t a;
-    vec3_t b;
-    vec3_t c;
+    v3_t a;
+    v3_t b;
+    v3_t c;
 } tri3_t;

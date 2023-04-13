@@ -1,7 +1,7 @@
 // Copyright (C) Ethan Uppal 2023. All rights reserved.
 #pragma once
 
-#include "model/space.h"
+#include "model/matrix.h"
 #include "model/mesh.h"
 #include "render/camera.h"
 #include "render/frame_buffer.h"

@@ -2,12 +2,14 @@
 
 CFLAGS   += -Iinclude -std=c99 -pedantic
 WARNINGS += -Wall -Wextra
+DEBUG    := -g
+RELEASE  := -O3
 SRC      := $(wildcard src/*.c)
 OBJ      := ${SRC:.c=.o}
 BIN      := bin
 PRG      := main
 PRODUCT  := ${BIN}/out
-CFLAGS   += ${WARNINGS}
+CFLAGS   += ${WARNINGS} ${RELEASE}
 
 test: ${PRG}
 	${BIN}/${PRG} > ${PRODUCT}.ppm

@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 #include "model/triangle.h" // tri3_t
-#include "model/space.h" // matrix3_t
+#include "model/matrix.h" // matrix3_t
 #include "model/color.h" // color_t
 #include "util/macros.h" // GENERIC_CONSTRUCTOR
 
@@ -20,7 +20,7 @@ typedef struct {
 /// Represents a face-vertex mesh.
 typedef struct {
     vertex_size_t vertex_count;
-    vec3_t* vertex_list;
+    v3_t* vertex_list;
 
     size_t face_count;
     face3_t* face_list;
@@ -32,8 +32,8 @@ typedef struct {
 
 #define mesh3(...) GENERIC_CONSTRUCTOR(mesh3_t, __VA_ARGS__)
 
-/// Returns the triangle associated with the given face index in the mesh.
-tri3_t mesh3_face_tri(const mesh3_t* mesh, size_t i);
+/// Loads the vertices triangle associated with the given face index in the mesh.
+void mesh3_face_load_tri(v3_t tri[3], const mesh3_t* mesh, size_t i);
 
 /// Applies the given transform to the mesh around the given origin.
-void mesh3_transform(mesh3_t* mesh, vec3_t origin, matrix3_t transform);
+void mesh3_transform(mesh3_t* mesh, v3_t origin, matrix3_t transform);

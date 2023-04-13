@@ -6,7 +6,7 @@
 #define WIDTH 500
 #define HEIGHT 500
 
-vec3_t vertex_list1[] = {
+v3_t vertex_list1[] = {
     vec3(-2, -1, 2.5),
     vec3(-0.5, 1, 5.5),
     vec3(1, -1, 4.5),
@@ -22,7 +22,7 @@ mesh3_t mesh1 = mesh3(
     .color = color24(255, 0, 0)
 );
 
-vec3_t vertex_list2[] = {
+v3_t vertex_list2[] = {
     vec3(-1, 1, 2.5),
     vec3(1.5, 2.5, 3.5),
     vec3(2, 0.8, 2.5),
@@ -38,7 +38,7 @@ mesh3_t mesh2 = mesh3(
     .color = color24(255, 255, 0)
 );
 
-vec3_t vertex_list3[] = {
+v3_t vertex_list3[] = {
     vec3(1, -1, 4.5),
     vec3(-1, -1, 2.5),
     vec3(1.5, 2.5, 3.5),
@@ -70,13 +70,14 @@ int main(int argc, char const* argv[]) {
     frame_buffer_init(&frame, WIDTH, HEIGHT);
 
     // Cast the rays.
-    mesh3_t meshes[] = {
-        mesh1, mesh2, mesh3_
-    };
-    raycast(&frame, &camera, &space, lengthof(meshes), meshes);
+    mesh3_t meshes[2048];
+    for (size_t i = 0; i < 2048; i++) {
+        meshes[i] = mesh1;
+    }
+    raycast(&frame, &camera, &space, meshes, lengthof(meshes));
 
     // Generate ppm file
-    ppm_write_frame(stdout, &frame);
+    //ppm_write_frame(stdout, &frame);
 
     // Free the frame buffer.
     frame_buffer_free(&frame);

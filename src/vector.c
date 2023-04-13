@@ -3,25 +3,12 @@
 #include <stdio.h>
 #include "model/vector.h"
 
-vec3_t vec3_add(vec3_t v1, vec3_t v2) {
-    vec3_addm(v1, v2);
-    return v1;
-}
-
-vec3_t vec3_sub(vec3_t v1, vec3_t v2) {
-    vec3_subm(v1, v2);
-    return v1;
-}
-
-vec3_t vec3_comb(scalar_t a, vec3_t v1, scalar_t b, vec3_t v2, scalar_t c, vec3_t v3) {
-    vec3_mulm(v1, a);   // a(v1)
-    vec3_mulm(v2, b);   // b(v2)
-    vec3_mulm(v3, c);   // c(v3)
-    vec3_addm(v1, v2);  // a(v1) + b(v2)
-    vec3_addm(v1, v3);  // [a(v1) + b(v2)] + c(v3)
-    return v1;
-}
-
-void vec3_dump(vec3_t v) {
-    printf("(vec3){.x=%f, .y=%f, .z=%f}\n", v.x, v.y, v.z);
+// https://stackoverflow.com/questions/4120681/how-to-calculate-single-vector-dot-product-using-sse-intrinsic-functions-in-c
+scalar_t vec3_dot(v3_t v1, v3_t v2) {
+    v3_t r1 = _mm_mul_ps(v1, v2);
+    __m128 shuf   = _mm_shuffle_ps(r1, r1, _MM_SHUFFLE(2, 3, 0, 1));
+    __m128 sums   = _mm_add_ps(r1, shuf);
+    shuf          = _mm_movehl_ps(shuf, sums);
+    sums          = _mm_add_ss(sums, shuf);
+    return _mm_cvtss_f32(sums);
 }

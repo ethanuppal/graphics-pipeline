@@ -5,16 +5,15 @@
 
 /// Represents 3d Euclidean space.
 typedef struct {
-    vec3_t basis[3];
+    v3_t basis[3];
 } space3_t;
 
 /// Represents a 3x3 matrix.
 typedef struct {
-    vec3_t cols[3];
+    v3_t cols[3];
 } matrix3_t;
 
 #define matrix3(a, b, c) ((matrix3_t){{ a, b, c }})
-#define m3cols(m) ((m).cols)
 
 #define space3_default() ((space3_t){{ \
     vec3(1, 0 ,0), \
@@ -28,6 +27,10 @@ typedef struct {
     vec3(0, 0 ,1) \
 }})
 
-scalar_t det3(const matrix3_t matrix);
+// https://dcvp84mxptlac.cloudfront.net/diagrams2/equation-3-determinant-of-a-3x3-matrix.png
+#define det3(matrix) det3_cols((matrix).cols)
+#define det3_cols(m) (m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) \
+       - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2]) \
+       + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]))
 
 void matrix3_dump(const matrix3_t matrix);
