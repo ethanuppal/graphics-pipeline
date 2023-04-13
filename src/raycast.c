@@ -104,7 +104,7 @@ void single_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t wid
     }
 }
 
-void raycast(frame_buffer_t* frame, const camera3_t* camera, const space3_t* space, size_t mesh_count, const mesh3_t meshes[]) {
+void raycast(frame_buffer_t* frame, const camera3_t* camera, const space3_t* space, const mesh3_t meshes[], size_t mesh_count) {
     size_t index = 0;
     for (size_t j = 0; j < frame->height; j++) {
         for (size_t i = 0; i < frame->width; i++) {

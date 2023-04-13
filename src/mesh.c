@@ -15,5 +15,16 @@ tri3_t mesh3_face_tri(const mesh3_t* mesh, size_t i) {
 }
 
 void mesh3_transform(mesh3_t* mesh, vec3_t origin, matrix3_t transform) {
-    abort("mesh3_transform is not implemented");
+    for (size_t i = 0; i < mesh->vertex_count; i++) {
+        vec3_subm(mesh->vertex_list[i], origin);
+        mesh->vertex_list[i] = vec3_comb(
+            mesh->vertex_list[i].x,
+            transform.cols[0],
+            mesh->vertex_list[i].y,
+            transform.cols[1],
+            mesh->vertex_list[i].z,
+            transform.cols[2]
+        );
+        vec3_addm(mesh->vertex_list[i], origin);
+    }
 }

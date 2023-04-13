@@ -19,3 +19,5 @@ typedef struct {
 
 void frame_buffer_init(frame_buffer_t* frame, size_t width, size_t height);
 void frame_buffer_free(frame_buffer_t* frame);
+
+void frame_buffer_clear(frame_buffer_t* frame);

@@ -14,6 +14,9 @@ test: ${PRG}
 	pnmtopng ${PRODUCT}.ppm > ${PRODUCT}.png
 	open ${PRODUCT}.png
 
+test_gif: ${PRG}
+	${BIN}/${PRG}
+	./generate_gif.bash
 
 ${PRG}: ${OBJ} main.c
 	${CC} ${CFLAGS} $^ -o ${BIN}/${PRG}
