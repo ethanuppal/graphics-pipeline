@@ -1,83 +1,74 @@
 // Copyright (C) Ethan Uppal 2023. All rights reserved.
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "graphics.h"
 
 #define WIDTH 500
 #define HEIGHT 500
 
-v3_t vertex_list1[] = {
-    vec3(-2, -1, 2.5),
-    vec3(-0.5, 1, 5.5),
-    vec3(1, -1, 4.5),
-};
-face3_t face_list1[] = {
-    face3(0, 1, 2)
-};
-mesh3_t mesh1 = mesh3(
-    .vertex_count = lengthof(vertex_list1),
-    .vertex_list = vertex_list1,
-    .face_count = lengthof(face_list1),
-    .face_list = face_list1,
-    .color = color24(255, 0, 0)
-);
-
-v3_t vertex_list2[] = {
-    vec3(-1, 1, 2.5),
-    vec3(1.5, 2.5, 3.5),
-    vec3(2, 0.8, 2.5),
-};
-face3_t face_list2[] = {
-    face3(0, 1, 2)
-};
-mesh3_t mesh2 = mesh3(
-    .vertex_count = lengthof(vertex_list2),
-    .vertex_list = vertex_list2,
-    .face_count = lengthof(face_list2),
-    .face_list = face_list2,
-    .color = color24(255, 255, 0)
-);
-
-v3_t vertex_list3[] = {
-    vec3(1, -1, 4.5),
-    vec3(-1, -1, 2.5),
-    vec3(1.5, 2.5, 3.5),
-};
-face3_t face_list3[] = {
-    face3(0, 1, 2)
-};
-mesh3_t mesh3_ = mesh3(
-    .vertex_count = lengthof(vertex_list3),
-    .vertex_list = vertex_list3,
-    .face_count = lengthof(face_list3),
-    .face_list = face_list3,
-    .color = color24(0, 100, 255)
-);
-
 camera3_t camera = camera3(
-    .pos = vec3(0, 0, 0),
-    .view_width = 2,
-    .view_height = 2,
+    .pos = vec3(0, .1, 0),
+    .view_width = 1.8,
+    .view_height = 1.6,
     .z_focus = 1,
     .range = 10
 );
 
-space3_t space = space3_default();
+#define N 2048
+#define NMESH 32
+#define NTRI (N / NMESH)
+#define NVER (NTRI + 2)
 
-int main(int argc, char const* argv[]) {
+int main() {
+
     // Construct the frame buffer.
     frame_buffer_t frame;
     frame_buffer_init(&frame, WIDTH, HEIGHT);
 
-    // Cast the rays.
-    mesh3_t meshes[2048];
-    for (size_t i = 0; i < 2048; i++) {
-        meshes[i] = mesh1;
+    // Create sample meshes. We leak but that's ok.
+    srand48(clock());
+    texture_t textures[NMESH];
+    mesh3_t meshes[NMESH];
+    for (size_t i = 0; i < NMESH; i++) {
+        v3_t* vertex_list = malloc(sizeof(*vertex_list) * NVER);
+        v3_t low_bound = vec3(
+            drand48() * 5 - 2.5,
+            drand48() * 5 - 2.5,
+            drand48() * 3 + 2
+        );
+        v3_t high_bound = vec3(
+            drand48() * 5 - 2.5,
+            drand48() * 5 - 2.5,
+            drand48() * 3 + 2
+        );
+        for (size_t j = 0; j < NVER; j++) {
+            vertex_list[j] = vec3_lerp_vec(
+                low_bound,
+                high_bound,
+                vec3(drand48(), drand48(), drand48())
+            );
+        }
+        face3_t* face_list = malloc(sizeof(*face_list) * NTRI);
+        for (size_t j = 0; j < NTRI; j++) {
+            face_list[j] = face3(j, j + 1, j + 2);
+        }
+        textures[i] = mono_texture(colorf(drand48(), drand48(), drand48()));
+        meshes[i] = mesh3(
+            .vertex_count = NVER,
+            .vertex_list = vertex_list,
+            .face_count = NTRI,
+            .face_list = face_list,
+            .texture = &textures[i]
+        );
     }
-    raycast(&frame, &camera, &space, meshes, lengthof(meshes));
+
+    // Cast the rays.
+    raycast(&frame, &camera, meshes, lengthof(meshes));
 
     // Generate ppm file
-    //ppm_write_frame(stdout, &frame);
+    ppm_write_frame(stdout, &frame);
 
     // Free the frame buffer.
     frame_buffer_free(&frame);

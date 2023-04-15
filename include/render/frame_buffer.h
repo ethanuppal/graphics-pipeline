@@ -2,12 +2,12 @@
 #pragma once
 
 #include <stddef.h> // size_t
-#include <stdint.h> // uint8_t
-#include "model/color.h"
+#include "model/color.h" // color_t
+#include "linalg/vector.h" // scalar_t
 
-typedef uint8_t depth_t;
+typedef scalar_t depth_t;
 
-#define MAX_DISCRETE_DEPTH ((depth_t)255)
+// #define MAX_DISCRETE_DEPTH ((depth_t)255)
 
 /// Represents a projection of 3d space onto a 2d color and depth map.
 typedef struct {

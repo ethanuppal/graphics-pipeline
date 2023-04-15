@@ -1,13 +1,15 @@
 // Copyright (C) Ethan Uppal 2023. All rights reserved.
 #pragma once
 
+// linalg
+#include "linalg/vector.h"
+#include "linalg/vector.h"
 // model
 #include "model/color.h"
 #include "model/mesh.h"
 #include "model/ray.h"
-#include "model/matrix.h"
-#include "model/triangle.h"
-#include "model/vector.h"
+#include "model/texture.h"
+
 
 // render
 #include "render/camera.h"

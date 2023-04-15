@@ -9,7 +9,7 @@ OBJ      := ${SRC:.c=.o}
 BIN      := bin
 PRG      := main
 PRODUCT  := ${BIN}/out
-CFLAGS   += ${WARNINGS} ${RELEASE}
+CFLAGS   += ${WARNINGS} ${DEBUG} ${RELEASE}
 
 test: ${PRG}
 	${BIN}/${PRG} > ${PRODUCT}.ppm

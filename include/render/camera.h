@@ -1,7 +1,7 @@
 // Copyright (C) Ethan Uppal 2023. All rights reserved.
 #pragma once
 
-#include "model/vector.h" // vec3_t
+#include "linalg/vector.h" // vec3_t
 #include "util/macros.h" // GENERIC_CONSTRUCTOR
 
 typedef struct {

@@ -1,7 +1,7 @@
 // Copyright (C) Ethan Uppal 2023. All rights reserved.
 #pragma once
 
-#include "model/vector.h" // vec3_t
+#include "linalg/vector.h" // vec3_t
 
 /// Represents a ray eminating from an arbitary point.
 typedef struct {
@@ -16,6 +16,6 @@ typedef struct {
 typedef struct {
     scalar_t t;
     v2_t loc;
-} ray3_intersect;
+} ray3_intersect_t;
 
 #define ray3(o, d) ((ray3_t){ o, d });

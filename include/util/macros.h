@@ -49,3 +49,6 @@ struct __dump_arg {
 #define __eval5(...) __eval4(__eval4(__VA_ARGS__))
 #define __eval6(...) __eval5(__eval5(__VA_ARGS__))
 #define eval(...) __eval6(__eval6(__VA_ARGS__))
+
+#define min(x, y) ((x) < (y) ? (x) : (y))
+#define max(x, y) ((x) > (y) ? (x) : (y))
