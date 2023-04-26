@@ -30,6 +30,8 @@ void INLINE mesh3_face_load_tri(v3_t tri[VECTORS_PER_TRI], const mesh3_t* mesh, 
     // Set aabb bounds to include min and max xyz.
     aabb->p0 = vec3_min(aabb->p0, min_xyz);
     aabb->p1 = vec3_max(aabb->p1, max_xyz);
+
+    // printf("%f %f %f %f %f %f\n", aabb->p0[0], aabb->p0[1], aabb->p0[2], aabb->p1[0], aabb->p1[1], aabb->p1[2]);
 }
 
 v3_t* mesh3_generate_triangles(const mesh3_t* mesh, aabb_t* aabb) {

@@ -9,9 +9,9 @@
 #define HEIGHT 500
 
 camera3_t camera = camera3(
-    .pos = vec3(0, .1, 0),
-    .view_width = 1.8,
-    .view_height = 1.6,
+    .pos = vec3(0, 0, 0),
+    .view_width = 2,
+    .view_height = 2,
     .z_focus = 1,
     .range = 10
 );
@@ -22,7 +22,6 @@ camera3_t camera = camera3(
 #define NVER (NTRI + 2)
 
 int main() {
-
     // Construct the frame buffer.
     frame_buffer_t frame;
     frame_buffer_init(&frame, WIDTH, HEIGHT);

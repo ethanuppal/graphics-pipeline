@@ -11,6 +11,8 @@
 #include "util/macros.h" // INLINE, min, max
 #include "model/texture.h" // texture_color
 
+// int counter = 0;
+
 bool per_pixel_ray_single_triangle(ray3_intersect_t* intersection, const ray3_t* ray, v3_t tri[3]);
 void raycast_determine_ray(ray3_t* ray,  size_t pi, size_t pj, size_t width, size_t height, const camera3_t* camera);
 void find_ray_intersections(ray3_intersect_t* best_intersection, const texture_t** chosen, const ray3_t* ray, const mesh3_internal_t meshes[], size_t mesh_count);
@@ -18,6 +20,7 @@ void per_pixel_ray(color_t* color, depth_t* depth, size_t pi, size_t pj, size_t 
 bool ray_intersects_aabb(const ray3_t* ray, const aabb_t* aabb);
 
 bool INLINE per_pixel_ray_single_triangle(ray3_intersect_t* intersection, const ray3_t* ray, v3_t tri[VECTORS_PER_TRI]) {
+    // counter++;
     // Compute determinants for Cramer's rule
     const v3_t n = tri[0] - ray->origin;
     const v3_t d1 = tri[1];
@@ -40,14 +43,6 @@ bool INLINE per_pixel_ray_single_triangle(ray3_intersect_t* intersection, const 
 
         // Triangle interior test
         if (alpha > 0 && beta > 0 && gamma > 0) {
-            // Convert barycentric to Cartesian
-            // https://stackoverflow.com/questions/56328254/how-to-make-the-conversion-from-barycentric-coordinates-to-cartesian-coordinates
-            // const v3_t barycentric = vec3(alpha, beta, gamma);
-            // const v3_t tri_x = vec3(tri[0][0], tri[1][0], tri[2][0]);
-            // const v3_t tri_y = vec3(tri[0][1], tri[1][1], tri[2][1]);
-            // const scalar_t x = vec3_dot(barycentric, tri_x);
-            // const scalar_t y = vec3_dot(barycentric, tri_y);
-
             // Use Cramer's rule to find t
             intersection->t = t_determinant / bottom_determinant;
             intersection->loc = vec2(beta, gamma);
@@ -87,8 +82,14 @@ bool INLINE ray_intersects_aabb(const ray3_t* ray, const aabb_t* aabb) {
     const v3_t tp0_vec = (aabb->p0 - ray->origin) / ray->dir;
     const v3_t tp1_vec = (aabb->p1 - ray->origin) / ray->dir;
 
-    const scalar_t tmin = min(vec3_min_e(tp0_vec), vec3_min_e(tp1_vec));
-    const scalar_t tmax = max(vec3_max_e(tp0_vec), vec3_max_e(tp1_vec));
+    const scalar_t t1 = tp0_vec[0];
+    const scalar_t t2 = tp1_vec[0];
+    const scalar_t t3 = tp0_vec[1];
+    const scalar_t t4 = tp1_vec[1];
+    const scalar_t t5 = tp0_vec[2];
+    const scalar_t t6 = tp1_vec[2];
+    const scalar_t tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
+    const scalar_t tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
 
     if (tmax < 0) {
         return false;
@@ -167,6 +168,8 @@ void raycast(frame_buffer_t* frame, const camera3_t* camera, const mesh3_t meshe
             index++;
         }
     }
+
+    // printf("%d\n", counter);
 
     // Free the internal triangle representation.
     free_mesh_internals(mesh_internals, mesh_count);
