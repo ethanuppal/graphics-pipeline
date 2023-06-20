@@ -2,6 +2,7 @@
 #pragma once
 
 #include "linalg/vector.h" // vec3_t
+#include "linalg/matrix.h" // matrix3_t
 #include "util/macros.h" // GENERIC_CONSTRUCTOR
 
 typedef struct {
@@ -9,7 +10,11 @@ typedef struct {
 
     scalar_t view_width;
     scalar_t view_height;
-    scalar_t z_focus;
+    matrix3_t dir;
+    enum projection_t {
+        PROJ_PARALLEL,
+        PROJ_PERSPECTIVE
+    } projection;
 
     scalar_t range;
 } camera3_t;

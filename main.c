@@ -26,6 +26,15 @@ color_t face_colors[] = {
     color24(255, 255, 0),
 };
 
+color_t face_colors2[] = {
+    color24(0, 255, 255),
+    color24(0, 255, 255),
+    color24(0, 255, 255),
+    color24(0, 255, 255),
+    color24(0, 255, 255),
+    color24(0, 255, 255),
+};
+
 #define yspin(theta) matrix3( \
     vec3(cos(theta), 0, sin(theta)), \
     vec3(0, 1, 0), \
@@ -71,8 +80,17 @@ int main(void) {
     common_t* cube2 = common_cube(v3(-1, 0, -1), v3(0, 1, 0), face_colors);
     mesh3_t* cube2_mesh = common_get_mesh(cube2);
 
+    common_t* cube3 = common_cube(v3(0, 0, -1), v3(0.5, 4, 0), face_colors2);
+    mesh3_t* cube3_mesh = common_get_mesh(cube3);
+
+    common_t* cube4 = common_cube(v3(0, 4, -1), v3(-1, 3, 0), face_colors2);
+    mesh3_t* cube4_mesh = common_get_mesh(cube4);
+
+    common_t* cube5 = common_cube(v3(-1, 0, -1), v3(-1.5, 4, 0), face_colors2);
+    mesh3_t* cube5_mesh = common_get_mesh(cube5);
+
     // Cast the rays.
-    mesh3_t meshes[] = { *surface_mesh, *cube1_mesh, *cube2_mesh };
+    mesh3_t meshes[] = { *surface_mesh, *cube1_mesh, *cube2_mesh, *cube3_mesh, *cube4_mesh, *cube5_mesh };
     raycast(&frame, &camera, meshes, lengthof(meshes));
 
     // Generate ppm file
