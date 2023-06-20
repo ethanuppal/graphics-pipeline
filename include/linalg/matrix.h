@@ -28,4 +28,18 @@ typedef struct {
 // #define _det3(v1, v2, v3) vec3_triple(v1, v2, v3)
 
 /// Computes the determinant of the given 3x3 matrix.
-#define matrx3_det(m) det3((m).cols[0], (m).cols[1], (m).cols[2])
+#define matrix3_det(m) det3((m).cols[0], (m).cols[1], (m).cols[2])
+
+#define matrix3_apply(matrix, vector) vec3_comb( \
+    vector[0], \
+    matrix.cols[0], \
+    vector[1], \
+    matrix.cols[1], \
+    vector[2], \
+    matrix.cols[2] \
+);
+#define matrix3_multm(m1, m2) do { \
+    m2.cols[0] = matrix3_apply(m1, m2.cols[0]); \
+    m2.cols[1] = matrix3_apply(m1, m2.cols[1]); \
+    m2.cols[2] = matrix3_apply(m1, m2.cols[2]); \
+} while (0)

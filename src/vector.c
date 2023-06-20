@@ -33,11 +33,11 @@ scalar_t INLINE vec3_max_e(v3_t v) {
 }
 
 // https://geometrian.com/programming/tutorials/cross-product/index.php
-// v3_t INLINE vec3_cross(v3_t const vec0, v3_t const vec1) {
-//     v3_t tmp0 = _mm_shuffle_ps(vec0,vec0,_MM_SHUFFLE(3,0,2,1));
-//     v3_t tmp1 = _mm_shuffle_ps(vec1,vec1,_MM_SHUFFLE(3,1,0,2));
-//     v3_t tmp2 = _mm_mul_ps(tmp0,vec1);
-//     v3_t tmp3 = _mm_mul_ps(tmp0,tmp1);
-//     v3_t tmp4 = _mm_shuffle_ps(tmp2,tmp2,_MM_SHUFFLE(3,0,2,1));
-//     return _mm_sub_ps(tmp3,tmp4);
-// }
+v3_t INLINE vec3_cross(v3_t const vec0, v3_t const vec1) {
+    v3_t tmp0 = _mm_shuffle_ps(vec0,vec0,_MM_SHUFFLE(3,0,2,1));
+    v3_t tmp1 = _mm_shuffle_ps(vec1,vec1,_MM_SHUFFLE(3,1,0,2));
+    v3_t tmp2 = _mm_mul_ps(tmp0,vec1);
+    v3_t tmp3 = _mm_mul_ps(tmp0,tmp1);
+    v3_t tmp4 = _mm_shuffle_ps(tmp2,tmp2,_MM_SHUFFLE(3,0,2,1));
+    return _mm_sub_ps(tmp3,tmp4);
+}

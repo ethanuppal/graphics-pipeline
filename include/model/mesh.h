@@ -20,7 +20,7 @@ typedef struct {
 } face3_t;
 
 /// Represents a face-vertex mesh.
-typedef struct {
+typedef struct mesh3_t {
     vertex_size_t vertex_count;
     v3_t* vertex_list;
 
@@ -32,7 +32,7 @@ typedef struct {
 
 typedef struct {
     size_t size;
-    v3_t* triangles;
+    v4_t* triangles;
     aabb_t aabb;
     texture_t* texture;
 } mesh3_internal_t;
@@ -48,4 +48,4 @@ mesh3_internal_t* create_mesh_internals(const mesh3_t meshes[], size_t mesh_coun
 void free_mesh_internals(mesh3_internal_t* meshes, size_t mesh_count);
 
 /// Applies the given transform to the mesh around the given origin.
-void mesh3_transform(mesh3_t* mesh, v3_t origin, matrix3_t transform);
+v3_t mesh3_transform(mesh3_t* mesh, v3_t origin, matrix3_t transform);

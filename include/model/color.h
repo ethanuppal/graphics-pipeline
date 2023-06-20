@@ -27,3 +27,18 @@ typedef v3_t color_t;
 #define color_g(color) ((color)[1])
 /// Extracts the 8-bit blue component from the given color.
 #define color_b(color) ((color)[2])
+
+#define color_cut(color) (_mm_min_ps(color, v3(1, 1, 1)))
+
+// https://en.wikipedia.org/wiki/Relative_luminance
+#define color_luma(color) ( \
+    (0.2126 * color_r(color)) \
+    + (0.7152 * color_g(color)) \
+    + (0.0722 * color_b(color)) \
+)
+
+#define color_set_luma(color, luma) do { \
+    (color) /= (scalar_t)color_luma(color); \
+    (color) *= _mm_set1_ps(luma); \
+    (color) = color_cut(color); \
+} while (0)

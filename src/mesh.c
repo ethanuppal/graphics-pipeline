@@ -2,6 +2,7 @@
 
 #include <stdlib.h> // malloc, free
 #include "model/mesh.h"
+#include "linalg/matrix.h"
 #include "util/abort.h" // abort
 #include "util/macros.h" // INLINE
 
@@ -20,6 +21,7 @@ void INLINE mesh3_face_load_tri(v3_t tri[VECTORS_PER_TRI], const mesh3_t* mesh, 
 
     // Set vectors into triangle buffer.
     tri[0] = a;
+    tri[0][3] = (scalar_t)i; // horrible but works
     tri[1] = a - b;
     tri[2] = a - c;
 
@@ -63,18 +65,11 @@ void free_mesh_internals(mesh3_internal_t* meshes, size_t mesh_count) {
     free(meshes);
 }
 
-
-void mesh3_transform(mesh3_t* mesh, v3_t origin, matrix3_t transform) {
+v3_t mesh3_transform(mesh3_t* mesh, v3_t origin, matrix3_t transform) {
     for (size_t i = 0; i < mesh->vertex_count; i++) {
         mesh->vertex_list[i] -= origin;
-        mesh->vertex_list[i] = vec3_comb(
-            mesh->vertex_list[i][0],
-            transform.cols[0],
-            mesh->vertex_list[i][1],
-            transform.cols[1],
-            mesh->vertex_list[i][2],
-            transform.cols[2]
-        );
+        mesh->vertex_list[i] = matrix3_apply(transform, mesh->vertex_list[i]);
         mesh->vertex_list[i] += origin;
     }
+    return matrix3_apply(transform, origin);
 }

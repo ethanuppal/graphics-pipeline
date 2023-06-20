@@ -7,6 +7,7 @@
 
 typedef float scalar_t;
 
+typedef scalar_t v4_t __attribute__((vector_size (16)));
 typedef scalar_t v3_t __attribute__((vector_size (16)));
 typedef scalar_t v2_t __attribute__((vector_size (8)));
 
@@ -15,53 +16,11 @@ typedef scalar_t v2_t __attribute__((vector_size (8)));
 
 /// Creates a 3d vector with the given components.
 #define vec3(x, y, z) ((v3_t){ x, y, z })
+#define v3(x, y, z) vec3(x, y, z)
 
-// /// Mutate-adds two vectors.
-// #define vec3_addm(v1, v2) do { \
-//     (v1).x += (v2).x; \
-//     (v1).y += (v2).y; \
-//     (v1).z += (v2).z; \
-// } while (0)
-//
-// /// Mutate-subtracts two vectors.
-// #define vec3_subm(v1, v2) do { \
-//     (v1).x -= (v2).x; \
-//     (v1).y -= (v2).y; \
-//     (v1).z -= (v2).z; \
-// } while (0)
-//
-// /// Mutate-multiplies a vector by a scalar.
-// #define vec3_mulm(v1, a) do { \
-//     (v1).x *= a; \
-//     (v1).y *= a; \
-//     (v1).z *= a; \
-// } while (0)
-//
-// /// Mutate-divides a vector by a scalar.
-// #define vec3_divm(v1, a) do { \
-//     (v1).x /= a; \
-//     (v1).y /= a; \
-//     (v1).z /= a; \
-// } while (0)
-//
-// /// Mutate-multiplies two vectors component-wise.
-// #define vec3_vmulm(v1, v2) do { \
-//     (v1).x *= (v2).x; \
-//     (v1).y *= (v2).y; \
-//     (v1).z *= (v2).z; \
-// } while (0)
-//
-// /// Mutate-divides two vectors component-wise.
-// #define vec3_vdivm(v1, v2) do { \
-//     (v1).x /= (v2).x; \
-//     (v1).y /= (v2).y; \
-//     (v1).z /= (v2).z; \
-// } while (0)
+/// Creates a 4d vector with the given components.
+#define vec4(w, x, y, z) ((v4_t){ w, x, y, z })
 
-/// Computes the dot product between two vectors.
-// #define vec3_dot(v1, v2) ((v1).x * (v2).x + (v1).y * (v2).y + (v1).z * (v2).z)
-
-//#define vec3_dot(v1, v2) eval(V_DOT(v1, v2))
 /// Computes the dot product between the two given vectors.
 #define V_DOT(x, y) _mm_dp_ps(x, y) // single precision
 scalar_t vec3_dot(v3_t v1, v3_t v2);
@@ -104,3 +63,5 @@ scalar_t vec3_max_e(v3_t v);
 
 #define vec3_lerp_vec(v1, v2, vt) ((v1) * (1 - (vt)) + (v2) * (vt))
 // void vec3_dump(vec3_t v);
+
+#define vec3_scale(v, s) _mm_mul_ps(v, _mm_set1_ps(s))//((s) * (v))

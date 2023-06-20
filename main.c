@@ -1,69 +1,78 @@
-// Copyright (C) Ethan Uppal 2023. All rights reserved.
+// @copy Copyright (C) Ethan Uppal 2023. All rights reserved.
+// @file This program draws a red cube using parallel projection.
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <math.h>
 #include "graphics.h"
+#include "common/common.h"
 
 #define WIDTH 500
 #define HEIGHT 500
 
+// Parallel projection from (0, 0, 0) to 2x2 window centered at (0,0,1)
 camera3_t camera = camera3(
-    .pos = vec3(0, 0, 0),
-    .view_width = 2,
-    .view_height = 2,
-    .z_focus = 1,
-    .range = 10
+    .pos = vec3(0, 2, -0.5),
+    .view_width = 5,
+    .view_height = 5,
+    .projection = PROJ_PARALLEL
 );
 
-#define N 2048
-#define NMESH 32
-#define NTRI (N / NMESH)
-#define NVER (NTRI + 2)
+color_t face_colors[] = {
+    color24(255, 0, 0),
+    color24(0, 255, 0),
+    color24(255, 255, 0),
+    color24(255, 0, 0),
+    color24(0, 255, 0),
+    color24(255, 255, 0),
+};
 
-int main() {
+#define yspin(theta) matrix3( \
+    vec3(cos(theta), 0, sin(theta)), \
+    vec3(0, 1, 0), \
+    vec3(-sin(theta), 0, cos(theta)) \
+)
+#define xspin(theta) matrix3( \
+    vec3(1, 0, 0), \
+    vec3(0, cos(theta), sin(theta)), \
+    vec3(0, -sin(theta), cos(theta)) \
+)
+
+int main(void) {
     // Construct the frame buffer.
     frame_buffer_t frame;
     frame_buffer_init(&frame, WIDTH, HEIGHT);
 
-    // Create sample meshes. We leak but that's ok.
-    srand48(clock());
-    texture_t textures[NMESH];
-    mesh3_t meshes[NMESH];
-    for (size_t i = 0; i < NMESH; i++) {
-        v3_t* vertex_list = malloc(sizeof(*vertex_list) * NVER);
-        v3_t low_bound = vec3(
-            drand48() * 5 - 2.5,
-            drand48() * 5 - 2.5,
-            drand48() * 3 + 2
-        );
-        v3_t high_bound = vec3(
-            drand48() * 5 - 2.5,
-            drand48() * 5 - 2.5,
-            drand48() * 3 + 2
-        );
-        for (size_t j = 0; j < NVER; j++) {
-            vertex_list[j] = vec3_lerp_vec(
-                low_bound,
-                high_bound,
-                vec3(drand48(), drand48(), drand48())
-            );
-        }
-        face3_t* face_list = malloc(sizeof(*face_list) * NTRI);
-        for (size_t j = 0; j < NTRI; j++) {
-            face_list[j] = face3(j, j + 1, j + 2);
-        }
-        textures[i] = mono_texture(colorf(drand48(), drand48(), drand48()));
-        meshes[i] = mesh3(
-            .vertex_count = NVER,
-            .vertex_list = vertex_list,
-            .face_count = NTRI,
-            .face_list = face_list,
-            .texture = &textures[i]
-        );
-    }
+    // Orient camera
+    scalar_t theta = 0.2;
+    scalar_t theta2 = -0.2;
+    camera.dir.cols[0] = vec3(1, 0, 0);
+    camera.dir.cols[1] = vec3(0, cos(theta), sin(theta));
+    camera.dir.cols[2] = vec3_cross(
+        camera.dir.cols[0],
+        camera.dir.cols[1]
+    );
+    matrix3_multm(yspin(0.3), camera.dir);
+    // matrix3_multm(xspin(0.3), camera.dir);
+
+    // Surface
+    common_t* surface = common_rect(
+        v3(-2, 0, -10),
+        v3(2, 0, -10),
+        v3(-2, 0, 10),
+        v3(2, 0, 10),
+        color24(200, 200, 200)
+    );
+    mesh3_t* surface_mesh = common_get_mesh(surface);
+
+    // Create the cube
+    common_t* cube1 = common_cube(v3(-1, 0, 0), v3(1, 2, 2), face_colors);
+    mesh3_t* cube1_mesh = common_get_mesh(cube1);
+
+    common_t* cube2 = common_cube(v3(-1, 0, -1), v3(0, 1, 0), face_colors);
+    mesh3_t* cube2_mesh = common_get_mesh(cube2);
 
     // Cast the rays.
+    mesh3_t meshes[] = { *surface_mesh, *cube1_mesh, *cube2_mesh };
     raycast(&frame, &camera, meshes, lengthof(meshes));
 
     // Generate ppm file
@@ -71,6 +80,11 @@ int main() {
 
     // Free the frame buffer.
     frame_buffer_free(&frame);
+
+    // Free the commons
+    common_free(cube1);
+    common_free(cube2);
+    common_free(surface);
 
     return 0;
 }
