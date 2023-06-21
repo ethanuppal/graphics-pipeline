@@ -17,16 +17,26 @@ camera3_t camera = camera3(
     .projection = PROJ_PARALLEL
 );
 
-color_t face_colors[] = {
-    color24(255, 0, 0),
+color_t water = color24(0, 255, 255);
+
+color_t grass[] = {
+    color24(150, 100, 50),
+    color24(150, 100, 50),
     color24(0, 255, 0),
-    color24(255, 255, 0),
-    color24(255, 0, 0),
+    color24(150, 100, 50),
+    color24(150, 100, 50),
+    color24(150, 100, 50),
+};
+color_t grass_right[] = {
+    color24(150, 100, 50),
+    color24(150, 100, 50),
     color24(0, 255, 0),
-    color24(255, 255, 0),
+    color24(150, 100, 50),
+    color24(0, 255, 0),
+    color24(150, 100, 50),
 };
 
-color_t face_colors2[] = {
+color_t waterfull[] = {
     color24(0, 255, 255),
     color24(0, 255, 255),
     color24(0, 255, 255),
@@ -53,7 +63,6 @@ int main(void) {
 
     // Orient camera
     scalar_t theta = 0.2;
-    scalar_t theta2 = -0.2;
     camera.dir.cols[0] = vec3(1, 0, 0);
     camera.dir.cols[1] = vec3(0, cos(theta), sin(theta));
     camera.dir.cols[2] = vec3_cross(
@@ -61,36 +70,28 @@ int main(void) {
         camera.dir.cols[1]
     );
     matrix3_multm(yspin(0.3), camera.dir);
-    // matrix3_multm(xspin(0.3), camera.dir);
 
-    // Surface
-    common_t* surface = common_rect(
-        v3(-2, 0, -10),
-        v3(2, 0, -10),
-        v3(-2, 0, 10),
-        v3(2, 0, 10),
-        color24(200, 200, 200)
-    );
-    mesh3_t* surface_mesh = common_get_mesh(surface);
-
-    // Create the cube
-    common_t* cube1 = common_cube(v3(-1, 0, 0), v3(1, 2, 2), face_colors);
-    mesh3_t* cube1_mesh = common_get_mesh(cube1);
-
-    common_t* cube2 = common_cube(v3(-1, 0, -1), v3(0, 1, 0), face_colors);
-    mesh3_t* cube2_mesh = common_get_mesh(cube2);
-
-    common_t* cube3 = common_cube(v3(0, 0, -1), v3(0.5, 4, 0), face_colors2);
-    mesh3_t* cube3_mesh = common_get_mesh(cube3);
-
-    common_t* cube4 = common_cube(v3(0, 4, -1), v3(-1, 3, 0), face_colors2);
-    mesh3_t* cube4_mesh = common_get_mesh(cube4);
-
-    common_t* cube5 = common_cube(v3(-1, 0, -1), v3(-1.5, 4, 0), face_colors2);
-    mesh3_t* cube5_mesh = common_get_mesh(cube5);
-
+    // Create the scene
+    common_t* objects[] = {
+        common_rect(
+            v3(-10, 0, -10),
+            v3(10, 0, -10),
+            v3(-10, 0, 10),
+            v3(10, 0, 10),
+            water
+        ),
+        common_cube(v3(-1, 0, 0), v3(1, 2, 2), grass),
+        common_cube(v3(-1.5, 0, 0), v3(-1, 4, -1), grass_right),
+        common_cube(v3(-1, 0, -1), v3(0, 1, 0), grass),
+        common_cube(v3(1, 0, 1), v3(1.5, 4, 2), grass),
+        common_cube(v3(-0.75, 1, -0.5), v3(0.5, 1.5, 0), waterfull),
+        common_cube(v3(0, 0, -0.5), v3(0.5, 1, 0), waterfull),
+    };
     // Cast the rays.
-    mesh3_t meshes[] = { *surface_mesh, *cube1_mesh, *cube2_mesh, *cube3_mesh, *cube4_mesh, *cube5_mesh };
+    mesh3_t meshes[lengthof(objects)];
+    for (size_t i = 0; i < lengthof(objects); i++) {
+        meshes[i] = *common_get_mesh(objects[i]);
+    }
     raycast(&frame, &camera, meshes, lengthof(meshes));
 
     // Generate ppm file
@@ -100,9 +101,9 @@ int main(void) {
     frame_buffer_free(&frame);
 
     // Free the commons
-    common_free(cube1);
-    common_free(cube2);
-    common_free(surface);
+    for (size_t i = 0; i < lengthof(objects); i++) {
+        common_free(objects[i]);
+    }
 
     return 0;
 }

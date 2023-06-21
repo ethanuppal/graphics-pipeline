@@ -10,7 +10,9 @@ BIN      := bin
 PRG      := main
 BENCH	 := benchmark
 PRODUCT  := ${BIN}/out
-CFLAGS   += ${WARNINGS} ${RELEASE} # ${DEBUG}
+CFLAGS   += ${WARNINGS}
+# CFLAGS   += ${RELEASE}
+CFLAGS   += ${DEBUG}
 CFLAGS	 += -D DEBUG_COUNTS
 
 test: ${PRG}

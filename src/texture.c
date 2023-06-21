@@ -30,7 +30,7 @@ color_t texture_color(const texture_t* texture, ray3_intersect_t* intersection, 
     // Use inverse square intensity reduction
     // Hacky, will fix to add lights as objects later
     // (Assuming everything is totally transparent, you then just add up all the intensity contributions from each light or something)
-    #define T_SCALE 1.0
+    #define T_SCALE 1.5
     // if (intersection->t < 0) {
     //     intensity = 0;
     //     // assuming monodirectional light
@@ -38,8 +38,9 @@ color_t texture_color(const texture_t* texture, ray3_intersect_t* intersection, 
     // } else {
     //     intensity = T_SCALE / (intersection->t + 1);
     // }
-    intersection->t = fabs(intersection->t);
-    depth_t intensity = T_SCALE / (intersection->t + 1.0);
+    const v3_t delta = intersection->loc - camera->pos;
+    scalar_t dist = vec3_mag(delta);
+    depth_t intensity = T_SCALE / (dist + 1);
 
-    return color * intensity;
+    return color_cut(color * intensity);
 }

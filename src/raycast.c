@@ -51,7 +51,15 @@ bool INLINE per_pixel_ray_single_triangle(ray3_intersect_t* intersection, const 
         if (alpha > 0 && beta > 0 && gamma > 0) {
             // Use Cramer's rule to find t
             intersection->t = t_determinant / bottom_determinant;
-            intersection->loc = vec2(beta, gamma);
+
+            // Convert to Cartesian coordinates.
+            // https://stackoverflow.com/questions/11262391/from-barycentric-to-cartesian
+            const v3_t t1 = tri[0];
+            const v3_t t2 = tri[0] + tri[1];
+            const v3_t t3 = tri[0] + tri[2];
+
+            const v3_t loc = vec3_comb(alpha, t1, beta, t2, gamma, t3);
+            intersection->loc = loc;
 
             return true;
         } else {

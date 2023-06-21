@@ -27,6 +27,11 @@ face3_t cube_geometry[] = {
 };
 
 common_t* common_cube(v3_t a, v3_t b, color_t face_colors[CUBE_FACES]) {
+    v3_t p = _mm_min_ps(a, b);
+    v3_t q = _mm_max_ps(a, b);
+    a = p;
+    b = q;
+
     v3_t* cube_vertices = malloc(sizeof(*cube_vertices) * CUBE_VERTICES);
     cube_vertices[0] = v3(a[0], a[1], a[2]); // 0 Bottom Left Near
     cube_vertices[1] = v3(b[0], a[1], a[2]); // 1 Bottom Right Near

@@ -16,7 +16,7 @@ typedef struct {
 /// Represents the result of a ray intersection.
 typedef struct {
     scalar_t t;
-    v2_t loc;
+    v3_t loc;
     size_t face; // hacky should remove
 } ray3_intersect_t;
 
